@@ -1,0 +1,19 @@
+[
+  {
+    "id": "p1",
+    "modelName": "NVIDIA RTX 4070",
+    "category": "Grafická karta",
+    "offers": [
+      { "shopId": "s1", "price": 15500 },
+      { "shopId": "s2", "price": 15900 }
+    ]
+  },
+  {
+    "id": "p2",
+    "modelName": "AMD Ryzen 7 7800X3D",
+    "category": "Procesor",
+    "offers": [
+      { "shopId": "s1", "price": 9800 }
+    ]
+  }
+]

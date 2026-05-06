@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Catalog() {
   const [products, setProducts] = useState([]);
@@ -54,6 +55,8 @@ export default function Catalog() {
         {products.map(product => (
           <li key={product.id}>
             {product.modelName} [{product.category}] 
+            {/* Tlačítko odkazující na detail */}
+            <Link to={`/product/${product.id}`}><button>Detail a ceny</button></Link>
             <button onClick={() => updateProduct(product.id)}>Upravit</button>
             <button onClick={() => deleteProduct(product.id)}>Smazat</button>
           </li>

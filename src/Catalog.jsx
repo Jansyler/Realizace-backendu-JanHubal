@@ -30,14 +30,22 @@ export default function Catalog({ isAdmin }) {
       .then(res => res.json())
       .then(data => setShops(data));
 
-    // 2. Načteme produkty. Pokud je zadaný text v hledání, přidáme query parametr ?search=
-    fetch(`http://localhost:3000/product${search ? '?search=' + search : ''}`)
+    // 2. Načteme všechny produkty najednou
+    fetch('http://localhost:3000/product')
       .then(res => res.json())
       .then(data => setProducts(data));
   };
 
-  // useEffect se spustí poprvé při načtení stránky a pak pokaždé, když se změní stav 'search' (vyhledávání)
-  useEffect(() => { loadData(); }, [search]);
+  // Načteme data jen při prvním načtení stránky (nebo po přidání nového produktu)
+  useEffect(() => { loadData(); }, []);
+
+  // Filtrace produktů na frontendu – vyhledáváme v názvu i v kategorii!
+  const filteredProducts = products.filter(product => {
+    const s = search.toLowerCase();
+    const matchName = product.modelName.toLowerCase().includes(s);
+    const matchCat = product.category.toLowerCase().includes(s);
+    return matchName || matchCat;
+  });
 
   const addProduct = (e) => {
     e.preventDefault();
@@ -79,7 +87,7 @@ export default function Catalog({ isAdmin }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    loadData();
+    // Nemusíme znovu načítat data ze serveru, filtrujeme už lokálně při psaní
   };
 
   // Pomocná funkce, která projde všechny nabídky a najde tu s nejnižší cenou
@@ -115,7 +123,7 @@ export default function Catalog({ isAdmin }) {
       </form>
 
       <div className="product-grid">
-        {products.map(product => {
+        {filteredProducts.map(product => {
           const info = getLowestPriceInfo(product.offers);
           return (
             <Link to={`/product/${product.id}`} className="product-card" key={product.id}>

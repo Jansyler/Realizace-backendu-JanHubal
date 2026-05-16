@@ -49,17 +49,17 @@ export default function Catalog() {
 
   const addProduct = (e) => {
     e.preventDefault();
-    
+
     // Zkusíme najít existující produkt se stejným názvem
     const existingProduct = products.find(p => p.modelName.toLowerCase().trim() === modelName.toLowerCase().trim());
 
     if (existingProduct) {
       if (selectedShopId && price) {
         let updatedOffers = existingProduct.offers ? [...existingProduct.offers] : [];
-        
+
         // Zkontrolujeme, jestli už od tohoto obchodu nemáme u produktu nabídku
         const existingOfferIndex = updatedOffers.findIndex(o => o.shopId === selectedShopId);
-        
+
         if (existingOfferIndex !== -1) {
           // Pokud nabídka od obchodu existuje a cena je stejná, nemá smysl nic dělat
           if (updatedOffers[existingOfferIndex].price === Number(price)) {
@@ -184,7 +184,7 @@ export default function Catalog() {
         })}
       </div>
 
-      <div className="admin-actions card-container">
+      <div className="form-section card-container">
         <h2>Přidat nový produkt</h2>
         <form onSubmit={addProduct}>
           <div className="form-group">

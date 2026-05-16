@@ -77,7 +77,7 @@ export default function Shops() {
       </div>
 
       {shops.length > 0 && (
-        <div className="admin-actions">
+        <div className="form-section">
           <h3 style={{marginBottom: '20px', fontSize: '16px'}}>Spravovat existující obchody</h3>
           <div className="product-grid" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))'}}>
             {shops.map(shop => (

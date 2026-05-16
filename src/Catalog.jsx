@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Catalog() {
+export default function Catalog({ isAdmin }) {
   const [products, setProducts] = useState([]);
   const [shops, setShops] = useState([]);
   const [search, setSearch] = useState('');
@@ -107,29 +107,35 @@ export default function Catalog() {
                 <span className="card-shop">{info.shop}</span>
               </div>
 
-              <div className="mt-4 gap-2 flex-between" style={{ borderTop: '1px solid #eee', paddingTop: '10px' }} onClick={e => e.preventDefault()}>
-                <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => updateProduct(e, product.id)}>Upravit</button>
-                <button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => deleteProduct(e, product.id)}>Smazat</button>
-              </div>
+              {/* Admin actions: Ukážou se pouze, pokud je zapnutý pohled Admina */}
+              {isAdmin && (
+                <div className="mt-4 gap-2 flex-between" style={{ borderTop: '1px solid #eee', paddingTop: '10px' }} onClick={e => e.preventDefault()}>
+                  <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => updateProduct(e, product.id)}>Upravit</button>
+                  <button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => deleteProduct(e, product.id)}>Smazat</button>
+                </div>
+              )}
             </Link>
           );
         })}
       </div>
 
-      <div className="admin-actions card-container">
-        <h2>Přidat nový produkt (Admin)</h2>
-        <form onSubmit={addProduct}>
-          <div className="form-group">
-            <label>Název produktu</label>
-            <input value={modelName} onChange={e => setModelName(e.target.value)} placeholder="např. NVIDIA RTX 4060" required />
-          </div>
-          <div className="form-group">
-            <label>Kategorie</label>
-            <input value={category} onChange={e => setCategory(e.target.value)} placeholder="např. Grafická karta" required />
-          </div>
-          <button type="submit" className="btn" style={{ width: '100%' }}>Přidat produkt</button>
-        </form>
-      </div>
+      {/* Formulář na přidání nového produktu vidí jen Admin */}
+      {isAdmin && (
+        <div className="admin-actions card-container">
+          <h2>Přidat nový produkt (Admin)</h2>
+          <form onSubmit={addProduct}>
+            <div className="form-group">
+              <label>Název produktu</label>
+              <input value={modelName} onChange={e => setModelName(e.target.value)} placeholder="např. NVIDIA RTX 4060" required />
+            </div>
+            <div className="form-group">
+              <label>Kategorie</label>
+              <input value={category} onChange={e => setCategory(e.target.value)} placeholder="např. Grafická karta" required />
+            </div>
+            <button type="submit" className="btn" style={{ width: '100%' }}>Přidat produkt</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

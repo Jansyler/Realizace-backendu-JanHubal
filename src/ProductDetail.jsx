@@ -29,7 +29,20 @@ export default function ProductDetail() {
   // Přidání produktu do naší "PC Sestavy" (uložíme to lokálně v prohlížeči přes localStorage)
   const addToBuild = (offer) => {
     const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || []; // Pokud tam nic není, vrátí prázdné pole
+    
+    // Kontrola, jestli už nemáme v sestavě produkt stejné kategorie
+    const existingIndex = currentBuild.findIndex(item => item.category === product.category);
+    
+    if (existingIndex !== -1) {
+      const replace = window.confirm(`V sestavě už máte položku v kategorii "${product.category}". Chcete ji nahradit? \n\n(Klikněte OK pro nahrazení, Zrušit pro přidání dalšího kusu jako duplikát.)`);
+      if (replace) {
+        currentBuild.splice(existingIndex, 1); // Odstraní starou položku
+      }
+    }
+
     currentBuild.push({
+      productId: product.id, // Ukládáme i ID produktu a obchodu kvůli pozdější kontrole cen
+      offerShopId: offer.shopId,
       modelName: product.modelName,
       category: product.category,
       price: offer.price,
@@ -97,7 +110,7 @@ export default function ProductDetail() {
               <td className="price-bold">{offer.price} Kč</td>
               <td>
                 <button className="btn btn-secondary" style={{padding: '6px 12px', fontSize: '13px'}} onClick={() => addToBuild(offer)}>
-                  Koupit →
+                  Přidat do sestavy
                 </button>
               </td>
             </tr>

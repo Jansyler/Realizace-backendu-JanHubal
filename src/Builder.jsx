@@ -2,11 +2,47 @@ import { useState, useEffect } from 'react';
 
 export default function Builder() {
   const [buildItems, setBuildItems] = useState([]);
+  const [warnings, setWarnings] = useState([]);
 
   // Při prvním načtení stránky se podíváme, jestli máme něco uložené v lokální paměti prohlížeče
   useEffect(() => {
     const savedBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
-    setBuildItems(savedBuild);
+    
+    // Načteme aktuální produkty a zkontrolujeme, zda se u některé z uložených položek nezměnila cena
+    if (savedBuild.length > 0) {
+      fetch('http://localhost:3000/product')
+        .then(res => res.json())
+        .then(products => {
+          let hasChanges = false;
+          let newWarnings = [];
+          
+          const updatedBuild = savedBuild.map(item => {
+            // Zkontrolujeme, zda má položka productId (pro zpětnou kompatibilitu)
+            if (!item.productId) return item;
+
+            const dbProduct = products.find(p => p.id === item.productId);
+            if (dbProduct) {
+              const dbOffer = dbProduct.offers.find(o => o.shopId === item.offerShopId);
+              if (dbOffer && dbOffer.price !== item.price) {
+                newWarnings.push(`Cena u položky ${item.modelName} byla aktualizována z ${item.price} Kč na ${dbOffer.price} Kč.`);
+                hasChanges = true;
+                return { ...item, price: dbOffer.price };
+              }
+            }
+            return item;
+          });
+          
+          if (hasChanges) {
+            setWarnings(newWarnings);
+            setBuildItems(updatedBuild);
+            localStorage.setItem('my_pc_build', JSON.stringify(updatedBuild)); // Uložíme nové ceny zpět
+          } else {
+            setBuildItems(savedBuild);
+          }
+        });
+    } else {
+      setBuildItems(savedBuild);
+    }
   }, []);
 
   const clearBuild = () => {
@@ -35,6 +71,16 @@ export default function Builder() {
         </h2>
         <p>{buildItems.length} komponent</p>
       </div>
+
+      {/* Zobrazení varování o změně ceny */}
+      {warnings.length > 0 && (
+        <div style={{backgroundColor: '#fff3cd', color: '#856404', padding: '15px', borderBottom: '1px solid #ffeeba'}}>
+          <strong>Pozor:</strong>
+          <ul style={{margin: '5px 0 0 20px', fontSize: '13px'}}>
+            {warnings.map((w, i) => <li key={i}>{w}</li>)}
+          </ul>
+        </div>
+      )}
 
       <div>
         {buildItems.length === 0 ? (

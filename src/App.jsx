@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import Catalog from './Catalog';
 import Shops from './Shops';
 import ProductDetail from './ProductDetail';
@@ -7,14 +7,17 @@ import Builder from './Builder';
 export default function App() {
   return (
     <BrowserRouter>
-      <div>
-        <h1>Hardware Checker</h1>
-        <nav>
-          <Link to="/">1. Katalog</Link> |{' '}
-          <Link to="/shops">2. Přidat obchod</Link> |{' '}
-          <Link to="/builder">3. Moje PC Sestava</Link>
+      <div className="container">
+        <nav className="nav-bar">
+          <NavLink to="/" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>1. Katalog</NavLink>
+          <NavLink to="/shops" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>2. Přidat obchod</NavLink>
+          {/* Detail a ceny normálně nemají odkaz v navigaci, je tam přesmerován z katalogu. Builder ano. */}
+          <NavLink to="/builder" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>4. PC Sestava</NavLink>
         </nav>
-        <hr />
+        
+        <header className="page-header">
+          <h1>Hardware Checker</h1>
+        </header>
         
         <Routes>
           <Route path="/" element={<Catalog />} />

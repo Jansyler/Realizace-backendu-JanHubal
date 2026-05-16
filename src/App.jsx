@@ -27,10 +27,10 @@ export default function App() {
             <NavLink to="/shops" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Přidat obchod</NavLink>
             <NavLink to="/builder" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>PC Sestava</NavLink>
           </nav>
-          
+
           <div className="header-actions">
             {/* Tlačítko na přepínání rolí pro ukázku */}
-            <button onClick={toggleAdmin} className="btn btn-secondary" style={{padding: '6px 12px', fontSize: '12px'}}>
+            <button onClick={toggleAdmin} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>
               {isAdmin ? 'Pohled: Admin' : 'Pohled: Uživatel'}
             </button>
           </div>
@@ -51,7 +51,7 @@ export default function App() {
             <NavLink to="/shops">Přidat obchod</NavLink>
             <NavLink to="/builder">PC Sestava</NavLink>
           </div>
-          <p>&copy; {new Date().getFullYear()} Hardware Checker. Všechna práva vyhrazena.</p>
+          <p>&copy; {new Date().getFullYear()} Jan Hubal. Všechna práva vyhrazena.</p>
         </footer>
       </div>
     </BrowserRouter>

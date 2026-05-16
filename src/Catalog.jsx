@@ -8,6 +8,8 @@ export default function Catalog({ isAdmin }) {
 
   const [modelName, setModelName] = useState('');
   const [category, setCategory] = useState('');
+  const [selectedShopId, setSelectedShopId] = useState('');
+  const [price, setPrice] = useState('');
 
   const loadData = () => {
     // 1. Načteme všechny obchody (potřebujeme je pro zobrazení jmen obchodů u nabídek)
@@ -26,12 +28,19 @@ export default function Catalog({ isAdmin }) {
 
   const addProduct = (e) => {
     e.preventDefault();
+    
+    // Pokud uživatel zadal obchod a cenu, vytvoříme rovnou první nabídku
+    const newOffers = [];
+    if (selectedShopId && price) {
+      newOffers.push({ shopId: selectedShopId, price: Number(price) });
+    }
+
     fetch('http://localhost:3000/product', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ modelName, category, offers: [] })
+      body: JSON.stringify({ modelName, category, offers: newOffers })
     }).then(() => {
-      setModelName(''); setCategory(''); loadData();
+      setModelName(''); setCategory(''); setSelectedShopId(''); setPrice(''); loadData();
     });
   };
 
@@ -131,6 +140,17 @@ export default function Catalog({ isAdmin }) {
             <div className="form-group">
               <label>Kategorie</label>
               <input value={category} onChange={e => setCategory(e.target.value)} placeholder="např. Grafická karta" required />
+            </div>
+            <div className="form-group">
+              <label>Výchozí obchod (volitelné)</label>
+              <select value={selectedShopId} onChange={e => setSelectedShopId(e.target.value)}>
+                <option value="">-- Vyberte obchod --</option>
+                {shops.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Cena (Kč)</label>
+              <input type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="např. 15000" />
             </div>
             <button type="submit" className="btn" style={{ width: '100%' }}>Přidat produkt</button>
           </form>

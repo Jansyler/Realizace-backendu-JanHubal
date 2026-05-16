@@ -39,5 +39,16 @@
         "price": 5000
       }
     ]
+  },
+  {
+    "id": "a2601799-f2c2-4c9d-bdfc-6d61e89767a5",
+    "modelName": "I5 10600K",
+    "category": "Procesor",
+    "offers": [
+      {
+        "shopId": "s1",
+        "price": 2009
+      }
+    ]
   }
 ]

@@ -59,7 +59,7 @@ export default function Catalog({ isAdmin }) {
         const updatedOffers = existingProduct.offers ? [...existingProduct.offers, newOffer] : [newOffer];
 
         fetch(`http://localhost:3000/product/${existingProduct.id}`, {
-          method: 'PATCH',
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ offers: updatedOffers })
         }).then(() => {

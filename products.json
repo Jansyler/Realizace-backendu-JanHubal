@@ -48,6 +48,10 @@
       {
         "shopId": "s1",
         "price": 2009
+      },
+      {
+        "shopId": "s2",
+        "price": 1000
       }
     ]
   }

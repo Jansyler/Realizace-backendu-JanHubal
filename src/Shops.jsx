@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function Shops({ isAdmin }) {
+export default function Shops() {
   const [shops, setShops] = useState([]);
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
@@ -64,10 +64,9 @@ export default function Shops({ isAdmin }) {
         </form>
       </div>
 
-      {/* Správa existujících obchodů - vidí pouze admin */}
-      {isAdmin && shops.length > 0 && (
+      {shops.length > 0 && (
         <div className="admin-actions">
-          <h3 style={{marginBottom: '20px', fontSize: '16px'}}>Spravovat existující obchody (Admin)</h3>
+          <h3 style={{marginBottom: '20px', fontSize: '16px'}}>Spravovat existující obchody</h3>
           <div className="product-grid" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))'}}>
             {shops.map(shop => (
               <div key={shop.id} className="product-card" style={{padding: '16px'}}>

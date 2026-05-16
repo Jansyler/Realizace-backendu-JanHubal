@@ -52,6 +52,10 @@
       {
         "shopId": "s2",
         "price": 1000
+      },
+      {
+        "shopId": "s1",
+        "price": 900
       }
     ]
   }

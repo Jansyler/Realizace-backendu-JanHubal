@@ -29,20 +29,28 @@ export default function ProductDetail() {
 
   // Přidání produktu do naší "PC Sestavy" (uložíme to lokálně v prohlížeči přes localStorage)
   const addToBuild = (offer) => {
-    const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || []; // Pokud tam nic není, vrátí prázdné pole
+    const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
     
+    // Kontrola, jestli už nemáme v sestavě stejný produkt ze stejného obchodu
+    const exactDuplicate = currentBuild.find(
+      item => item.productId === product.id && item.offerShopId === offer.shopId
+    );
+    if (exactDuplicate) {
+      alert(`Tento produkt ze stejného obchodu už v sestavě máte!`);
+      return;
+    }
+
     // Kontrola, jestli už nemáme v sestavě produkt stejné kategorie
     const existingIndex = currentBuild.findIndex(item => item.category === product.category);
     
     if (existingIndex !== -1) {
-      const replace = window.confirm(`V sestavě už máte položku v kategorii "${product.category}". Chcete ji nahradit? \n\n(Klikněte OK pro nahrazení, Zrušit pro přidání dalšího kusu jako duplikát.)`);
-      if (replace) {
-        currentBuild.splice(existingIndex, 1); // Odstraní starou položku
-      }
+      const replace = window.confirm(`V sestavě už máte položku v kategorii "${product.category}".\n\nChcete ji nahradit za "${product.modelName}"?`);
+      if (!replace) return; // Uživatel zrušil – nic nepřidáme
+      currentBuild.splice(existingIndex, 1); // Odstraní starou položku
     }
 
     currentBuild.push({
-      productId: product.id, // Ukládáme i ID produktu a obchodu kvůli pozdější kontrole cen
+      productId: product.id,
       offerShopId: offer.shopId,
       modelName: product.modelName,
       category: product.category,

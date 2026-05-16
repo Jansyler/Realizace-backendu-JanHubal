@@ -55,8 +55,24 @@ export default function Catalog() {
 
     if (existingProduct) {
       if (selectedShopId && price) {
-        const newOffer = { shopId: selectedShopId, price: Number(price) };
-        const updatedOffers = existingProduct.offers ? [...existingProduct.offers, newOffer] : [newOffer];
+        let updatedOffers = existingProduct.offers ? [...existingProduct.offers] : [];
+        
+        // Zkontrolujeme, jestli už od tohoto obchodu nemáme u produktu nabídku
+        const existingOfferIndex = updatedOffers.findIndex(o => o.shopId === selectedShopId);
+        
+        if (existingOfferIndex !== -1) {
+          // Pokud nabídka od obchodu existuje a cena je stejná, nemá smysl nic dělat
+          if (updatedOffers[existingOfferIndex].price === Number(price)) {
+            alert('Tato nabídka se stejnou cenou a obchodem už u produktu existuje.');
+            return;
+          } else {
+            // Pokud je cena jiná, pouze stávající nabídku zaktualizujeme novou cenou
+            updatedOffers[existingOfferIndex].price = Number(price);
+          }
+        } else {
+          // Jinak přidáme novou nabídku
+          updatedOffers.push({ shopId: selectedShopId, price: Number(price) });
+        }
 
         fetch(`http://localhost:3000/product/${existingProduct.id}`, {
           method: 'PUT',
@@ -64,6 +80,7 @@ export default function Catalog() {
           body: JSON.stringify({ offers: updatedOffers })
         }).then(() => {
           setModelName(''); setCategory(''); setSelectedShopId(''); setPrice(''); loadData();
+          alert('Nabídka produktu byla aktualizována!');
         });
       } else {
         alert("Zadejte prosím obchod a cenu pro přidání nabídky k existujícímu produktu.");

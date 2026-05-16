@@ -17,6 +17,18 @@ export default function Shops() {
   // Odeslání nového obchodu na backend metodou POST
   const addShop = (e) => {
     e.preventDefault(); // Zabrání tomu, aby se po odeslání formuláře celá stránka znovu načetla
+    
+    // Kontrola duplicit (stejné jméno nebo stejná URL)
+    const isDuplicate = shops.some(s => 
+      s.name.toLowerCase().trim() === name.toLowerCase().trim() || 
+      s.url.toLowerCase().trim() === url.toLowerCase().trim()
+    );
+
+    if (isDuplicate) {
+      alert('Tento obchod nebo URL již v databázi existuje!');
+      return;
+    }
+
     fetch('http://localhost:3000/shop', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

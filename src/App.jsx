@@ -22,8 +22,6 @@ export default function App() {
       <div className="container">
         {/* Sloučená a kompaktní hlavička */}
         <header className="main-header">
-          <div className="brand">Hardware Checker</div>
-          
           <nav className="nav-links">
             <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Katalog</NavLink>
             <NavLink to="/shops" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Přidat obchod</NavLink>

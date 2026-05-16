@@ -22,8 +22,8 @@ export default function App() {
       <div className="container">
         <nav className="nav-bar">
           <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Katalog</NavLink>
-          {/* Odkaz na přidání obchodu uvidí jen admin */}
-          {isAdmin && <NavLink to="/shops" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Přidat obchod</NavLink>}
+          {/* Odkaz na přidání obchodu uvidí všichni */}
+          <NavLink to="/shops" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Přidat obchod</NavLink>
           <NavLink to="/builder" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>PC Sestava</NavLink>
           
           {/* Tlačítko na přepínání rolí pro ukázku */}
@@ -39,7 +39,7 @@ export default function App() {
         {/* Routes definuje, jaká komponenta se má zobrazit pro konkrétní URL cestu */}
         <Routes>
           <Route path="/" element={<Catalog isAdmin={isAdmin} />} />
-          <Route path="/shops" element={<Shops />} />
+          <Route path="/shops" element={<Shops isAdmin={isAdmin} />} />
           <Route path="/product/:id" element={<ProductDetail />} /> {/* :id je dynamický parametr (např. /product/p1) */}
           <Route path="/builder" element={<Builder />} />
         </Routes>

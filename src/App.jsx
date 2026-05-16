@@ -8,7 +8,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <div>
-        <h1>RigRadar</h1>
+        <h1>Hardware Checker</h1>
         <nav>
           <Link to="/">1. Katalog</Link> |{' '}
           <Link to="/shops">2. Přidat obchod</Link> |{' '}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import CategoryIcon from './CategoryIcon';
 
 export default function Catalog({ isAdmin }) {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,18 @@ export default function Catalog({ isAdmin }) {
   const [category, setCategory] = useState('');
   const [selectedShopId, setSelectedShopId] = useState('');
   const [price, setPrice] = useState('');
+
+  // Předdefinované kategorie komponent
+  const PREDEFINED_CATEGORIES = [
+    "Procesor",
+    "Grafická karta",
+    "Základní deska",
+    "Operační paměť (RAM)",
+    "Pevný disk (SSD/HDD)",
+    "Zdroj",
+    "Počítačová skříň",
+    "Chlazení"
+  ];
 
   const loadData = () => {
     // 1. Načteme všechny obchody (potřebujeme je pro zobrazení jmen obchodů u nabídek)
@@ -107,7 +120,7 @@ export default function Catalog({ isAdmin }) {
           return (
             <Link to={`/product/${product.id}`} className="product-card" key={product.id}>
               <div className="img-placeholder">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" /></svg>
+                <CategoryIcon category={product.category} />
               </div>
               <div className="card-category">{product.category}</div>
               <div className="card-title">{product.modelName}</div>
@@ -139,7 +152,12 @@ export default function Catalog({ isAdmin }) {
             </div>
             <div className="form-group">
               <label>Kategorie</label>
-              <input value={category} onChange={e => setCategory(e.target.value)} placeholder="např. Grafická karta" required />
+              <select value={category} onChange={e => setCategory(e.target.value)} required>
+                <option value="">-- Vyberte kategorii --</option>
+                {PREDEFINED_CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
             <div className="form-group">
               <label>Výchozí obchod (volitelné)</label>

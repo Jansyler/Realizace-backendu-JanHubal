@@ -4,8 +4,14 @@
     "modelName": "NVIDIA RTX 4070",
     "category": "Grafická karta",
     "offers": [
-      { "shopId": "s1", "price": 15500 },
-      { "shopId": "s2", "price": 15900 }
+      {
+        "shopId": "s1",
+        "price": 15500
+      },
+      {
+        "shopId": "s2",
+        "price": 15900
+      }
     ]
   },
   {
@@ -13,7 +19,21 @@
     "modelName": "AMD Ryzen 7 7800X3D",
     "category": "Procesor",
     "offers": [
-      { "shopId": "s1", "price": 9800 }
+      {
+        "shopId": "s1",
+        "price": 9800
+      }
+    ]
+  },
+  {
+    "id": "dacd7e47-5b70-4d46-b224-50ee2dae36c1",
+    "modelName": "Samsung 980 ssd 500gb",
+    "category": "Pevný disk (SSD/HDD)",
+    "offers": [
+      {
+        "shopId": "s1",
+        "price": 5000
+      }
     ]
   }
 ]

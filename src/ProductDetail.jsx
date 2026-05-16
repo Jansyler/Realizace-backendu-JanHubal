@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import CategoryIcon from './CategoryIcon';
 
 export default function ProductDetail() {
   const { id } = useParams(); // Získáme parametr 'id' z aktuální URL adresy (např. 'p1' z /product/p1)
@@ -80,7 +81,7 @@ export default function ProductDetail() {
 
       <div className="detail-header">
         <div className="detail-img">
-          <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+          <CategoryIcon category={product.category} />
         </div>
         <div className="detail-info">
           <h2>{product.modelName}</h2>

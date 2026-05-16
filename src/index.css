@@ -32,15 +32,28 @@ body {
   padding: 20px;
 }
 
-/* Navigation */
-.nav-bar {
+/* Header (Sloučený a kompaktní) */
+.main-header {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
   padding: 20px 0;
   border-bottom: 1px solid var(--border-color);
-  background: white;
   margin-bottom: 40px;
+  background: transparent;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  align-items: center;
 }
 
 .nav-link {
@@ -63,21 +76,9 @@ body {
   font-weight: 600;
 }
 
-/* Header */
-.page-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.page-header h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
-  font-weight: 700;
-}
-
-.page-header p {
-  color: var(--text-gray);
-  font-size: 15px;
+.header-actions {
+  display: flex;
+  align-items: center;
 }
 
 /* Forms & Inputs */
@@ -478,4 +479,33 @@ select:focus {
 .gap-2 {
   display: flex;
   gap: 8px;
+}
+
+/* Footer */
+.main-footer {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-light-gray);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.footer-links a {
+  color: var(--text-gray);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--text-dark);
 }

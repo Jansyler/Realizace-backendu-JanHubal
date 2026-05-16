@@ -20,20 +20,22 @@ export default function App() {
     // BrowserRouter obaluje celou aplikaci a stará se o to, aby fungovalo překlikávání URL bez znovunačtení stránky
     <BrowserRouter>
       <div className="container">
-        <nav className="nav-bar">
-          <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Katalog</NavLink>
-          {/* Odkaz na přidání obchodu uvidí všichni */}
-          <NavLink to="/shops" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Přidat obchod</NavLink>
-          <NavLink to="/builder" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>PC Sestava</NavLink>
+        {/* Sloučená a kompaktní hlavička */}
+        <header className="main-header">
+          <div className="brand">Hardware Checker</div>
           
-          {/* Tlačítko na přepínání rolí pro ukázku */}
-          <button onClick={toggleAdmin} className="btn btn-secondary" style={{marginLeft: 'auto', padding: '6px 12px', fontSize: '12px'}}>
-            {isAdmin ? 'Pohled: Admin' : 'Pohled: Uživatel'}
-          </button>
-        </nav>
-
-        <header className="page-header">
-          <h1>Hardware Checker</h1>
+          <nav className="nav-links">
+            <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Katalog</NavLink>
+            <NavLink to="/shops" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Přidat obchod</NavLink>
+            <NavLink to="/builder" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>PC Sestava</NavLink>
+          </nav>
+          
+          <div className="header-actions">
+            {/* Tlačítko na přepínání rolí pro ukázku */}
+            <button onClick={toggleAdmin} className="btn btn-secondary" style={{padding: '6px 12px', fontSize: '12px'}}>
+              {isAdmin ? 'Pohled: Admin' : 'Pohled: Uživatel'}
+            </button>
+          </div>
         </header>
 
         {/* Routes definuje, jaká komponenta se má zobrazit pro konkrétní URL cestu */}
@@ -43,6 +45,16 @@ export default function App() {
           <Route path="/product/:id" element={<ProductDetail />} /> {/* :id je dynamický parametr (např. /product/p1) */}
           <Route path="/builder" element={<Builder />} />
         </Routes>
+
+        {/* Nová patička (Footer) */}
+        <footer className="main-footer">
+          <div className="footer-links">
+            <NavLink to="/">Katalog</NavLink>
+            <NavLink to="/shops">Přidat obchod</NavLink>
+            <NavLink to="/builder">PC Sestava</NavLink>
+          </div>
+          <p>&copy; {new Date().getFullYear()} Hardware Checker. Všechna práva vyhrazena.</p>
+        </footer>
       </div>
     </BrowserRouter>
   );

@@ -5,6 +5,7 @@ export default function Shops() {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
 
+  // Načtení všech obchodů z backendu metodou GET (výchozí)
   const loadShops = () => {
     fetch('http://localhost:3000/shop')
       .then(res => res.json())
@@ -13,8 +14,9 @@ export default function Shops() {
 
   useEffect(() => { loadShops(); }, []);
 
+  // Odeslání nového obchodu na backend metodou POST
   const addShop = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Zabrání tomu, aby se po odeslání formuláře celá stránka znovu načetla
     fetch('http://localhost:3000/shop', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

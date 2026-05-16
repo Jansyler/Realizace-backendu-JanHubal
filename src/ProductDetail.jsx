@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const { id } = useParams(); // Získáme parametr 'id' z aktuální URL adresy (např. 'p1' z /product/p1)
   const [product, setProduct] = useState(null);
   const [shops, setShops] = useState([]);
 
+  // Spustí se hned po načtení detailu, a pak znovu, kdykoliv by se změnilo 'id' v URL
   useEffect(() => {
+    // Stáhneme všechny produkty a vyfiltrujeme jen ten, jehož id odpovídá id z URL
     fetch('http://localhost:3000/product')
       .then(res => res.json())
       .then(data => {
@@ -24,8 +26,9 @@ export default function ProductDetail() {
     return shop ? shop.name : 'Neznámý obchod';
   };
 
+  // Přidání produktu do naší "PC Sestavy" (uložíme to lokálně v prohlížeči přes localStorage)
   const addToBuild = (offer) => {
-    const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
+    const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || []; // Pokud tam nic není, vrátí prázdné pole
     currentBuild.push({
       modelName: product.modelName,
       category: product.category,

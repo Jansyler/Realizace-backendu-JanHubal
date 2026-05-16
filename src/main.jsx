@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
+// Najdeme v HTML element s id="root" (z index.html) a vykreslíme do něj naši React aplikaci (komponentu App)
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />

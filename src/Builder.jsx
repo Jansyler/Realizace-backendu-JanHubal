@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 export default function Builder() {
   const [buildItems, setBuildItems] = useState([]);
 
+  // Při prvním načtení stránky se podíváme, jestli máme něco uložené v lokální paměti prohlížeče
   useEffect(() => {
     const savedBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
     setBuildItems(savedBuild);
@@ -15,12 +16,14 @@ export default function Builder() {
     }
   };
 
+  // Odstraní konkrétní položku podle jejího indexu v poli
   const removeItem = (indexToRemove) => {
     const newBuild = buildItems.filter((_, index) => index !== indexToRemove);
-    localStorage.setItem('my_pc_build', JSON.stringify(newBuild));
+    localStorage.setItem('my_pc_build', JSON.stringify(newBuild)); // Rovnou to uloží i do paměti
     setBuildItems(newBuild);
   };
 
+  // reduce: projde všechny položky a postupně k 'sum' (které začíná na 0) přičte cenu každé položky
   const totalPrice = buildItems.reduce((sum, item) => sum + item.price, 0);
 
   return (

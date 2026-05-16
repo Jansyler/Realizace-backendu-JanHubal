@@ -50,7 +50,28 @@ export default function Catalog({ isAdmin }) {
   const addProduct = (e) => {
     e.preventDefault();
     
-    // Pokud uživatel zadal obchod a cenu, vytvoříme rovnou první nabídku
+    // Zkusíme najít existující produkt se stejným názvem
+    const existingProduct = products.find(p => p.modelName.toLowerCase().trim() === modelName.toLowerCase().trim());
+
+    if (existingProduct) {
+      if (selectedShopId && price) {
+        const newOffer = { shopId: selectedShopId, price: Number(price) };
+        const updatedOffers = existingProduct.offers ? [...existingProduct.offers, newOffer] : [newOffer];
+
+        fetch(`http://localhost:3000/product/${existingProduct.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ offers: updatedOffers })
+        }).then(() => {
+          setModelName(''); setCategory(''); setSelectedShopId(''); setPrice(''); loadData();
+        });
+      } else {
+        alert("Zadejte prosím obchod a cenu pro přidání nabídky k existujícímu produktu.");
+      }
+      return;
+    }
+
+    // Pokud uživatel zadal obchod a cenu a produkt neexistuje, vytvoříme rovnou první nabídku
     const newOffers = [];
     if (selectedShopId && price) {
       newOffers.push({ shopId: selectedShopId, price: Number(price) });

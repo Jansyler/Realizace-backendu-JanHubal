@@ -35,5 +35,16 @@
         "price": 5000
       }
     ]
+  },
+  {
+    "id": "9aa789a3-687d-41c9-a508-1da6ccd08a4e",
+    "modelName": "AMD Ryzen 7 7800X3D",
+    "category": "Procesor",
+    "offers": [
+      {
+        "shopId": "s2",
+        "price": 9000
+      }
+    ]
   }
 ]

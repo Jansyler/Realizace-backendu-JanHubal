@@ -5,13 +5,13 @@
     "url": "https://alza.cz"
   },
   {
-    "id": "s2",
-    "name": "CZC.cz",
-    "url": "https://czc.cz"
-  },
-  {
     "id": "171a5755-35e8-4559-a01d-7add4d3c28cc",
     "name": "Amazon",
     "url": "https://www.amazon.de"
+  },
+  {
+    "id": "a99bec84-e461-4240-85f6-ba5f31b04fa9",
+    "name": "Datard.cz",
+    "url": "https://datard.cz"
   }
 ]

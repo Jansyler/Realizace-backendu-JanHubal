@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run dev\"",
-    "server": "node server.js",
+    "server": "node backend/server.js",
     "dev": "vite",
     "build": "vite build"
   },

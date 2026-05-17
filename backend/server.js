@@ -1,15 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// __dirname zajistí, že cesty vedou vždy do backend/ složky,
+// bez ohledu na to, odkud je server spuštěn.
 function readFiles(fileName) {
     try {
-        let rawdata = fs.readFileSync(fileName + '.json');
+        let rawdata = fs.readFileSync(path.join(__dirname, fileName + '.json'));
         return JSON.parse(rawdata);
     } catch (err) {
         return [];
@@ -18,7 +21,7 @@ function readFiles(fileName) {
 
 function writeFiles(fileName, data) {
     let stringData = JSON.stringify(data, null, 2);
-    fs.writeFileSync(fileName + '.json', stringData);
+    fs.writeFileSync(path.join(__dirname, fileName + '.json'), stringData);
 }
 
 app.post('/shop', (req, res) => {

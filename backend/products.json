@@ -16,8 +16,8 @@
   },
   {
     "id": "p2",
-    "modelName": "AMD Ryzen 7 7800X3D",
-    "category": "Procesor",
+    "modelName": "ASUS B460H",
+    "category": "Základní deska",
     "offers": [
       {
         "shopId": "s1",
@@ -41,21 +41,13 @@
     ]
   },
   {
-    "id": "a2601799-f2c2-4c9d-bdfc-6d61e89767a5",
-    "modelName": "I5 10600K",
-    "category": "Procesor",
+    "id": "b2866179-016d-41c5-959b-5ded4609fc8b",
+    "modelName": "RTX 3070",
+    "category": "Grafická karta",
     "offers": [
       {
-        "shopId": "s1",
-        "price": 2009
-      },
-      {
-        "shopId": "s2",
-        "price": 1000
-      },
-      {
-        "shopId": "s1",
-        "price": 900
+        "shopId": "171a5755-35e8-4559-a01d-7add4d3c28cc",
+        "price": 7000
       }
     ]
   }

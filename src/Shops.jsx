@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
 
+// Jednoduchá validace URL – zkontroluje jen formát textu (znaky a struktura)
+const isValidUrl = (value) => {
+  const trimmed = value.trim();
+  // Musí začínat http:// nebo https://, pak alespoň jeden znak, tečka a ještě alespoň 2 znaky
+  const urlPattern = /^https?:\/\/[\w\-]+(\.[\w\-]+)+([\/\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/i;
+  return urlPattern.test(trimmed);
+};
+
 export default function Shops() {
   const [shops, setShops] = useState([]);
   const [name, setName] = useState('');
@@ -22,6 +30,11 @@ export default function Shops() {
 
   const addShop = (e) => {
     e.preventDefault();
+
+    if (!isValidUrl(url)) {
+      setModal({ isOpen: true, type: 'alert', title: 'Neplatná URL', message: 'Zadejte platnou webovou adresu začínající http:// nebo https://, například https://www.example.cz', id: null });
+      return;
+    }
 
     const isDuplicate = shops.some(s =>
       s.name.toLowerCase().trim() === name.toLowerCase().trim() ||
@@ -49,16 +62,21 @@ export default function Shops() {
   };
 
   const executeEdit = () => {
-    if (editForm.name.trim() !== '' && editForm.url.trim() !== '') {
-      fetch('http://localhost:3000/shop/' + modal.id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: editForm.name, url: editForm.url })
-      }).then(() => {
-        loadShops();
-        closeModal();
-      });
+    if (editForm.name.trim() === '' || editForm.url.trim() === '') return;
+
+    if (!isValidUrl(editForm.url)) {
+      setModal(prev => ({ ...prev, isOpen: true, type: 'alert', title: 'Neplatná URL', message: 'Zadejte platnou webovou adresu začínající http:// nebo https://, například https://www.example.cz' }));
+      return;
     }
+
+    fetch('http://localhost:3000/shop/' + modal.id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: editForm.name, url: editForm.url })
+    }).then(() => {
+      loadShops();
+      closeModal();
+    });
   };
 
   const openDelete = (shop) => {

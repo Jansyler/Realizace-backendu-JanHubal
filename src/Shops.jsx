@@ -5,7 +5,7 @@ export default function Shops() {
   const [shops, setShops] = useState([]);
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
-  
+
   const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '', id: null });
   const [editForm, setEditForm] = useState({ name: '', url: '' });
 
@@ -22,9 +22,9 @@ export default function Shops() {
 
   const addShop = (e) => {
     e.preventDefault();
-    
-    const isDuplicate = shops.some(s => 
-      s.name.toLowerCase().trim() === name.toLowerCase().trim() || 
+
+    const isDuplicate = shops.some(s =>
+      s.name.toLowerCase().trim() === name.toLowerCase().trim() ||
       s.url.toLowerCase().trim() === url.toLowerCase().trim()
     );
 
@@ -75,10 +75,10 @@ export default function Shops() {
 
   return (
     <div>
-      <div className="card-container" style={{marginTop: '40px'}}>
+      <div className="card-container" style={{ marginTop: '40px' }}>
         <h2>Přidat nový e-shop</h2>
         <p className="subtitle">Zaregistrujte nový obchod pro sledování cen.</p>
-        
+
         <form onSubmit={addShop}>
           <div className="form-group">
             <label>Název e-shopu</label>
@@ -88,21 +88,21 @@ export default function Shops() {
             <label>Webová adresa (URL)</label>
             <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://www.example.cz" required />
           </div>
-          <button type="submit" className="btn" style={{width: '100%', marginTop: '10px'}}>Přidat obchod</button>
+          <button type="submit" className="btn" style={{ width: '100%', marginTop: '10px' }}>Přidat obchod</button>
         </form>
       </div>
 
       {shops.length > 0 && (
         <div className="form-section">
-          <h3 style={{marginBottom: '20px', fontSize: '16px'}}>Spravovat existující obchody</h3>
-          <div className="product-grid" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))'}}>
+          <h3 style={{ marginBottom: '20px', fontSize: '16px' }}>Spravovat existující obchody</h3>
+          <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
             {shops.map(shop => (
-              <div key={shop.id} className="product-card" style={{padding: '16px'}}>
-                <div style={{fontWeight: 600, marginBottom: '4px'}}>{shop.name}</div>
-                <div style={{fontSize: '12px', color: '#999', marginBottom: '16px'}}>{shop.url}</div>
+              <div key={shop.id} className="product-card" style={{ padding: '16px' }}>
+                <div style={{ fontWeight: 600, marginBottom: '4px' }}>{shop.name}</div>
+                <div style={{ fontSize: '12px', color: '#999', marginBottom: '16px' }}>{shop.url}</div>
                 <div className="flex-between">
-                  <button className="btn btn-secondary" style={{padding: '4px 8px', fontSize: '11px'}} onClick={() => openEdit(shop)}>Upravit</button>
-                  <button className="btn btn-danger" style={{padding: '4px 8px', fontSize: '11px'}} onClick={() => openDelete(shop)}>Smazat</button>
+                  <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={() => openEdit(shop)}>Upravit</button>
+                  <button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={() => openDelete(shop)}>Smazat</button>
                 </div>
               </div>
             ))}
@@ -110,8 +110,8 @@ export default function Shops() {
         </div>
       )}
 
-      {/* Modal Components */}
-      <Modal 
+      {/* Modal Componenty */}
+      <Modal
         isOpen={modal.isOpen && modal.type === 'alert'}
         title={modal.title}
         onClose={closeModal}
@@ -120,7 +120,7 @@ export default function Shops() {
         <p>{modal.message}</p>
       </Modal>
 
-      <Modal 
+      <Modal
         isOpen={modal.isOpen && modal.type === 'delete'}
         title={modal.title}
         onClose={closeModal}
@@ -131,7 +131,7 @@ export default function Shops() {
         <p>{modal.message}</p>
       </Modal>
 
-      <Modal 
+      <Modal
         isOpen={modal.isOpen && modal.type === 'edit'}
         title={modal.title}
         onClose={closeModal}
@@ -139,13 +139,13 @@ export default function Shops() {
         confirmText="Uložit"
         type="confirm"
       >
-        <div className="form-group" style={{textAlign: 'left'}}>
+        <div className="form-group" style={{ textAlign: 'left' }}>
           <label>Název obchodu</label>
-          <input value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} required />
+          <input value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} required />
         </div>
-        <div className="form-group" style={{textAlign: 'left'}}>
+        <div className="form-group" style={{ textAlign: 'left' }}>
           <label>Webová adresa (URL)</label>
-          <input value={editForm.url} onChange={e => setEditForm({...editForm, url: e.target.value})} required />
+          <input value={editForm.url} onChange={e => setEditForm({ ...editForm, url: e.target.value })} required />
         </div>
       </Modal>
     </div>

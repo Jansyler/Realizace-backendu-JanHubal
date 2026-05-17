@@ -12,7 +12,7 @@ export default function Catalog() {
   const [category, setCategory] = useState('');
   const [selectedShopId, setSelectedShopId] = useState('');
   const [price, setPrice] = useState('');
-  
+
   const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '', id: null });
   const [editForm, setEditForm] = useState({ modelName: '', category: '' });
 
@@ -233,8 +233,8 @@ export default function Catalog() {
         </form>
       </div>
 
-      {/* Modal Components */}
-      <Modal 
+      {/* Modal Componenty*/}
+      <Modal
         isOpen={modal.isOpen && modal.type === 'alert'}
         title={modal.title}
         onClose={closeModal}
@@ -243,7 +243,7 @@ export default function Catalog() {
         <p>{modal.message}</p>
       </Modal>
 
-      <Modal 
+      <Modal
         isOpen={modal.isOpen && modal.type === 'delete'}
         title={modal.title}
         onClose={closeModal}
@@ -254,7 +254,7 @@ export default function Catalog() {
         <p>{modal.message}</p>
       </Modal>
 
-      <Modal 
+      <Modal
         isOpen={modal.isOpen && modal.type === 'edit'}
         title={modal.title}
         onClose={closeModal}
@@ -262,13 +262,13 @@ export default function Catalog() {
         confirmText="Uložit"
         type="confirm"
       >
-        <div className="form-group" style={{textAlign: 'left'}}>
+        <div className="form-group" style={{ textAlign: 'left' }}>
           <label>Název produktu</label>
-          <input value={editForm.modelName} onChange={e => setEditForm({...editForm, modelName: e.target.value})} required />
+          <input value={editForm.modelName} onChange={e => setEditForm({ ...editForm, modelName: e.target.value })} required />
         </div>
-        <div className="form-group" style={{textAlign: 'left'}}>
+        <div className="form-group" style={{ textAlign: 'left' }}>
           <label>Kategorie</label>
-          <select value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})} required>
+          <select value={editForm.category} onChange={e => setEditForm({ ...editForm, category: e.target.value })} required>
             <option value="">-- Vyberte kategorii --</option>
             {PREDEFINED_CATEGORIES.map(cat => (
               <option key={cat} value={cat}>{cat}</option>

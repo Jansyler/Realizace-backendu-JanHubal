@@ -7,7 +7,7 @@ export default function ProductDetail() {
   const { id } = useParams(); // Získáme parametr 'id' z aktuální URL adresy (např. 'p1' z /product/p1)
   const [product, setProduct] = useState(null);
   const [shops, setShops] = useState([]);
-  
+
   const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '', pendingOffer: null, existingIndex: -1 });
 
   const closeModal = () => setModal({ isOpen: false, type: '', title: '', message: '', pendingOffer: null, existingIndex: -1 });
@@ -34,7 +34,7 @@ export default function ProductDetail() {
 
   const addToBuild = (offer) => {
     const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
-    
+
     // Kontrola, jestli už nemáme v sestavě stejný produkt ze stejného obchodu
     const exactDuplicate = currentBuild.find(
       item => item.productId === product.id && item.offerShopId === offer.shopId
@@ -46,7 +46,7 @@ export default function ProductDetail() {
 
     // Kontrola, jestli už nemáme v sestavě produkt stejné kategorie
     const existingIndex = currentBuild.findIndex(item => item.category === product.category);
-    
+
     if (existingIndex !== -1) {
       setModal({ isOpen: true, type: 'confirm_replace', title: 'Nahradit položku?', message: `V sestavě už máte položku v kategorii "${product.category}".\n\nChcete ji nahradit za "${product.modelName}"?`, pendingOffer: offer, existingIndex });
       return;
@@ -76,7 +76,7 @@ export default function ProductDetail() {
     finalizeAdd(modal.pendingOffer, currentBuild);
   };
 
-  if (!product) return <div className="text-center" style={{padding: '50px', color: '#999'}}>Načítání...</div>;
+  if (!product) return <div className="text-center" style={{ padding: '50px', color: '#999' }}>Načítání...</div>;
 
   // Najdeme nejnižší cenu pro odznáček
   let lowestPrice = Infinity;
@@ -89,10 +89,10 @@ export default function ProductDetail() {
   // Mock specs based on category
   const getMockSpecs = (cat) => {
     const lcat = cat.toLowerCase();
-    if(lcat.includes('procesor')) return '6 jader / 12 vláken • 3.8 GHz';
-    if(lcat.includes('grafická karta')) return '8GB GDDR6 • PCIe 4.0';
-    if(lcat.includes('ram')) return 'DDR5 • 6000 MHz • CL36';
-    if(lcat.includes('ssd')) return 'M.2 NVMe • Čtení 7000 MB/s';
+    if (lcat.includes('procesor')) return '6 jader / 12 vláken • 3.8 GHz';
+    if (lcat.includes('grafická karta')) return '8GB GDDR6 • PCIe 4.0';
+    if (lcat.includes('ram')) return 'DDR5 • 6000 MHz • CL36';
+    if (lcat.includes('ssd')) return 'M.2 NVMe • Čtení 7000 MB/s';
     return 'Standardní specifikace';
   };
 
@@ -133,7 +133,7 @@ export default function ProductDetail() {
               </td>
               <td className="price-bold">{offer.price} Kč</td>
               <td>
-                <button className="btn btn-secondary" style={{padding: '6px 12px', fontSize: '13px'}} onClick={() => addToBuild(offer)}>
+                <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={() => addToBuild(offer)}>
                   Přidat do sestavy
                 </button>
               </td>
@@ -141,14 +141,14 @@ export default function ProductDetail() {
           ))}
           {(!product.offers || product.offers.length === 0) && (
             <tr>
-              <td colSpan="3" className="text-center" style={{padding: '30px', color: '#999'}}>Tento produkt zatím nemá žádné nabídky.</td>
+              <td colSpan="3" className="text-center" style={{ padding: '30px', color: '#999' }}>Tento produkt zatím nemá žádné nabídky.</td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Modal Components */}
-      <Modal 
+      {/* Modal Componenty */}
+      <Modal
         isOpen={modal.isOpen && modal.type === 'alert'}
         title={modal.title}
         onClose={closeModal}
@@ -157,7 +157,7 @@ export default function ProductDetail() {
         <p>{modal.message}</p>
       </Modal>
 
-      <Modal 
+      <Modal
         isOpen={modal.isOpen && modal.type === 'confirm_replace'}
         title={modal.title}
         onClose={closeModal}
@@ -165,7 +165,7 @@ export default function ProductDetail() {
         confirmText="Nahradit"
         type="confirm"
       >
-        <p style={{whiteSpace: 'pre-line'}}>{modal.message}</p>
+        <p style={{ whiteSpace: 'pre-line' }}>{modal.message}</p>
       </Modal>
     </div>
   );

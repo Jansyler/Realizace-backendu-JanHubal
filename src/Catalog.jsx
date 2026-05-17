@@ -105,13 +105,19 @@ export default function Catalog() {
 
   const updateProduct = (e, id) => {
     e.preventDefault();
-    const newName = prompt("Zadej nový název produktu:");
-    if (newName) {
-      fetch('http://localhost:3000/product/' + id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ modelName: newName })
-      }).then(() => loadData());
+    const productToEdit = products.find(p => p.id === id);
+    const newName = prompt("Zadej nový název produktu:", productToEdit.modelName);
+    
+    if (newName !== null && newName.trim() !== '') {
+      const newCategory = prompt("Zadej novou kategorii produktu:", productToEdit.category);
+      
+      if (newCategory !== null && newCategory.trim() !== '') {
+        fetch('http://localhost:3000/product/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ modelName: newName, category: newCategory })
+        }).then(() => loadData());
+      }
     }
   };
 

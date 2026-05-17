@@ -40,13 +40,19 @@ export default function Shops() {
   };
 
   const updateShop = (id) => {
-    const newName = prompt("Zadej nový název obchodu:");
-    if (newName) {
-      fetch('http://localhost:3000/shop/' + id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName })
-      }).then(() => loadShops());
+    const shopToEdit = shops.find(s => s.id === id);
+    const newName = prompt("Zadej nový název obchodu:", shopToEdit.name);
+    
+    if (newName !== null && newName.trim() !== '') {
+      const newUrl = prompt("Zadej novou webovou adresu (URL):", shopToEdit.url);
+      
+      if (newUrl !== null && newUrl.trim() !== '') {
+        fetch('http://localhost:3000/shop/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: newName, url: newUrl })
+        }).then(() => loadShops());
+      }
     }
   };
 

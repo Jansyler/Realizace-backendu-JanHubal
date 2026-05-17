@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
+import Modal from './Modal';
 
 export default function Shops() {
   const [shops, setShops] = useState([]);
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
+  
+  const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '', id: null });
+  const [editForm, setEditForm] = useState({ name: '', url: '' });
+
+  const closeModal = () => setModal({ isOpen: false, type: '', title: '', message: '', id: null });
 
   // Načtení všech obchodů z backendu metodou GET (výchozí)
   const loadShops = () => {
@@ -14,18 +20,16 @@ export default function Shops() {
 
   useEffect(() => { loadShops(); }, []);
 
-  // Odeslání nového obchodu na backend metodou POST
   const addShop = (e) => {
-    e.preventDefault(); // Zabrání tomu, aby se po odeslání formuláře celá stránka znovu načetla
+    e.preventDefault();
     
-    // Kontrola duplicit (stejné jméno nebo stejná URL)
     const isDuplicate = shops.some(s => 
       s.name.toLowerCase().trim() === name.toLowerCase().trim() || 
       s.url.toLowerCase().trim() === url.toLowerCase().trim()
     );
 
     if (isDuplicate) {
-      alert('Tento obchod nebo URL již v databázi existuje!');
+      setModal({ isOpen: true, type: 'alert', title: 'Chyba', message: 'Tento obchod nebo URL již v databázi existuje!', id: null });
       return;
     }
 
@@ -35,32 +39,38 @@ export default function Shops() {
       body: JSON.stringify({ name, url })
     }).then(() => {
       setName(''); setUrl(''); loadShops();
-      alert('Obchod úspěšně přidán!');
+      setModal({ isOpen: true, type: 'alert', title: 'Úspěch', message: 'Obchod úspěšně přidán!', id: null });
     });
   };
 
-  const updateShop = (id) => {
-    const shopToEdit = shops.find(s => s.id === id);
-    const newName = prompt("Zadej nový název obchodu:", shopToEdit.name);
-    
-    if (newName !== null && newName.trim() !== '') {
-      const newUrl = prompt("Zadej novou webovou adresu (URL):", shopToEdit.url);
-      
-      if (newUrl !== null && newUrl.trim() !== '') {
-        fetch('http://localhost:3000/shop/' + id, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: newName, url: newUrl })
-        }).then(() => loadShops());
-      }
+  const openEdit = (shop) => {
+    setEditForm({ name: shop.name, url: shop.url });
+    setModal({ isOpen: true, type: 'edit', title: 'Upravit obchod', message: '', id: shop.id });
+  };
+
+  const executeEdit = () => {
+    if (editForm.name.trim() !== '' && editForm.url.trim() !== '') {
+      fetch('http://localhost:3000/shop/' + modal.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: editForm.name, url: editForm.url })
+      }).then(() => {
+        loadShops();
+        closeModal();
+      });
     }
   };
 
-  const deleteShop = (id) => {
-    if(window.confirm('Opravdu smazat tento obchod?')) {
-      fetch('http://localhost:3000/shop/' + id, { method: 'DELETE' })
-        .then(() => loadShops());
-    }
+  const openDelete = (shop) => {
+    setModal({ isOpen: true, type: 'delete', title: 'Smazat obchod', message: 'Opravdu si přejete smazat tento obchod?', id: shop.id });
+  };
+
+  const executeDelete = () => {
+    fetch('http://localhost:3000/shop/' + modal.id, { method: 'DELETE' })
+      .then(() => {
+        loadShops();
+        closeModal();
+      });
   };
 
   return (
@@ -91,14 +101,53 @@ export default function Shops() {
                 <div style={{fontWeight: 600, marginBottom: '4px'}}>{shop.name}</div>
                 <div style={{fontSize: '12px', color: '#999', marginBottom: '16px'}}>{shop.url}</div>
                 <div className="flex-between">
-                  <button className="btn btn-secondary" style={{padding: '4px 8px', fontSize: '11px'}} onClick={() => updateShop(shop.id)}>Upravit</button>
-                  <button className="btn btn-danger" style={{padding: '4px 8px', fontSize: '11px'}} onClick={() => deleteShop(shop.id)}>Smazat</button>
+                  <button className="btn btn-secondary" style={{padding: '4px 8px', fontSize: '11px'}} onClick={() => openEdit(shop)}>Upravit</button>
+                  <button className="btn btn-danger" style={{padding: '4px 8px', fontSize: '11px'}} onClick={() => openDelete(shop)}>Smazat</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       )}
+
+      {/* Modal Components */}
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'alert'}
+        title={modal.title}
+        onClose={closeModal}
+        type="alert"
+      >
+        <p>{modal.message}</p>
+      </Modal>
+
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'delete'}
+        title={modal.title}
+        onClose={closeModal}
+        onConfirm={executeDelete}
+        confirmText="Smazat"
+        type="danger"
+      >
+        <p>{modal.message}</p>
+      </Modal>
+
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'edit'}
+        title={modal.title}
+        onClose={closeModal}
+        onConfirm={executeEdit}
+        confirmText="Uložit"
+        type="confirm"
+      >
+        <div className="form-group" style={{textAlign: 'left'}}>
+          <label>Název obchodu</label>
+          <input value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} required />
+        </div>
+        <div className="form-group" style={{textAlign: 'left'}}>
+          <label>Webová adresa (URL)</label>
+          <input value={editForm.url} onChange={e => setEditForm({...editForm, url: e.target.value})} required />
+        </div>
+      </Modal>
     </div>
   );
 }

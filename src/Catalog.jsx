@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import CategoryIcon from './CategoryIcon';
+import Modal from './Modal';
 
 export default function Catalog() {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,11 @@ export default function Catalog() {
   const [category, setCategory] = useState('');
   const [selectedShopId, setSelectedShopId] = useState('');
   const [price, setPrice] = useState('');
+  
+  const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '', id: null });
+  const [editForm, setEditForm] = useState({ modelName: '', category: '' });
+
+  const closeModal = () => setModal({ isOpen: false, type: '', title: '', message: '', id: null });
 
   // Předdefinované kategorie komponent
   const PREDEFINED_CATEGORIES = [
@@ -63,7 +69,7 @@ export default function Catalog() {
         if (existingOfferIndex !== -1) {
           // Pokud nabídka od obchodu existuje a cena je stejná, nemá smysl nic dělat
           if (updatedOffers[existingOfferIndex].price === Number(price)) {
-            alert('Tato nabídka se stejnou cenou a obchodem už u produktu existuje.');
+            setModal({ isOpen: true, type: 'alert', title: 'Chyba', message: 'Tato nabídka se stejnou cenou a obchodem už u produktu existuje.', id: null });
             return;
           } else {
             // Pokud je cena jiná, pouze stávající nabídku zaktualizujeme novou cenou
@@ -80,10 +86,10 @@ export default function Catalog() {
           body: JSON.stringify({ offers: updatedOffers })
         }).then(() => {
           setModelName(''); setCategory(''); setSelectedShopId(''); setPrice(''); loadData();
-          alert('Nabídka produktu byla aktualizována!');
+          setModal({ isOpen: true, type: 'alert', title: 'Úspěch', message: 'Nabídka produktu byla aktualizována!', id: null });
         });
       } else {
-        alert("Zadejte prosím obchod a cenu pro přidání nabídky k existujícímu produktu.");
+        setModal({ isOpen: true, type: 'alert', title: 'Upozornění', message: 'Zadejte prosím obchod a cenu pro přidání nabídky k existujícímu produktu.', id: null });
       }
       return;
     }
@@ -103,30 +109,36 @@ export default function Catalog() {
     });
   };
 
-  const updateProduct = (e, id) => {
+  const openEditProduct = (e, product) => {
     e.preventDefault();
-    const productToEdit = products.find(p => p.id === id);
-    const newName = prompt("Zadej nový název produktu:", productToEdit.modelName);
-    
-    if (newName !== null && newName.trim() !== '') {
-      const newCategory = prompt("Zadej novou kategorii produktu:", productToEdit.category);
-      
-      if (newCategory !== null && newCategory.trim() !== '') {
-        fetch('http://localhost:3000/product/' + id, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ modelName: newName, category: newCategory })
-        }).then(() => loadData());
-      }
+    setEditForm({ modelName: product.modelName, category: product.category });
+    setModal({ isOpen: true, type: 'edit', title: 'Upravit produkt', message: '', id: product.id });
+  };
+
+  const executeEditProduct = () => {
+    if (editForm.modelName.trim() !== '' && editForm.category.trim() !== '') {
+      fetch('http://localhost:3000/product/' + modal.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ modelName: editForm.modelName, category: editForm.category })
+      }).then(() => {
+        loadData();
+        closeModal();
+      });
     }
   };
 
-  const deleteProduct = (e, id) => {
+  const openDeleteProduct = (e, product) => {
     e.preventDefault();
-    if (window.confirm('Opravdu smazat?')) {
-      fetch('http://localhost:3000/product/' + id, { method: 'DELETE' })
-        .then(() => loadData());
-    }
+    setModal({ isOpen: true, type: 'delete', title: 'Smazat produkt', message: 'Opravdu si přejete smazat tento produkt?', id: product.id });
+  };
+
+  const executeDeleteProduct = () => {
+    fetch('http://localhost:3000/product/' + modal.id, { method: 'DELETE' })
+      .then(() => {
+        loadData();
+        closeModal();
+      });
   };
 
   const handleSearch = (e) => {
@@ -182,8 +194,8 @@ export default function Catalog() {
               </div>
 
               <div className="mt-4 gap-2 flex-between" style={{ borderTop: '1px solid #eee', paddingTop: '10px' }} onClick={e => e.preventDefault()}>
-                <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => updateProduct(e, product.id)}>Upravit</button>
-                <button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => deleteProduct(e, product.id)}>Smazat</button>
+                <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => openEditProduct(e, product)}>Upravit</button>
+                <button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={(e) => openDeleteProduct(e, product)}>Smazat</button>
               </div>
             </Link>
           );
@@ -220,6 +232,50 @@ export default function Catalog() {
           <button type="submit" className="btn" style={{ width: '100%' }}>Přidat produkt</button>
         </form>
       </div>
+
+      {/* Modal Components */}
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'alert'}
+        title={modal.title}
+        onClose={closeModal}
+        type="alert"
+      >
+        <p>{modal.message}</p>
+      </Modal>
+
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'delete'}
+        title={modal.title}
+        onClose={closeModal}
+        onConfirm={executeDeleteProduct}
+        confirmText="Smazat"
+        type="danger"
+      >
+        <p>{modal.message}</p>
+      </Modal>
+
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'edit'}
+        title={modal.title}
+        onClose={closeModal}
+        onConfirm={executeEditProduct}
+        confirmText="Uložit"
+        type="confirm"
+      >
+        <div className="form-group" style={{textAlign: 'left'}}>
+          <label>Název produktu</label>
+          <input value={editForm.modelName} onChange={e => setEditForm({...editForm, modelName: e.target.value})} required />
+        </div>
+        <div className="form-group" style={{textAlign: 'left'}}>
+          <label>Kategorie</label>
+          <select value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})} required>
+            <option value="">-- Vyberte kategorii --</option>
+            {PREDEFINED_CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+      </Modal>
     </div>
   );
 }

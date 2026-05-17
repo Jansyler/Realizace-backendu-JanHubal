@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import CategoryIcon from './CategoryIcon';
+import Modal from './Modal';
 
 export default function ProductDetail() {
   const { id } = useParams(); // Získáme parametr 'id' z aktuální URL adresy (např. 'p1' z /product/p1)
   const [product, setProduct] = useState(null);
   const [shops, setShops] = useState([]);
+  
+  const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '', pendingOffer: null, existingIndex: -1 });
+
+  const closeModal = () => setModal({ isOpen: false, type: '', title: '', message: '', pendingOffer: null, existingIndex: -1 });
 
   // Spustí se hned po načtení detailu, a pak znovu, kdykoliv by se změnilo 'id' v URL
   useEffect(() => {
@@ -27,7 +32,6 @@ export default function ProductDetail() {
     return shop ? shop.name : 'Neznámý obchod';
   };
 
-  // Přidání produktu do naší "PC Sestavy" (uložíme to lokálně v prohlížeči přes localStorage)
   const addToBuild = (offer) => {
     const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
     
@@ -36,7 +40,7 @@ export default function ProductDetail() {
       item => item.productId === product.id && item.offerShopId === offer.shopId
     );
     if (exactDuplicate) {
-      alert(`Tento produkt ze stejného obchodu už v sestavě máte!`);
+      setModal({ isOpen: true, type: 'alert', title: 'Chyba', message: 'Tento produkt ze stejného obchodu už v sestavě máte!', pendingOffer: null, existingIndex: -1 });
       return;
     }
 
@@ -44,11 +48,14 @@ export default function ProductDetail() {
     const existingIndex = currentBuild.findIndex(item => item.category === product.category);
     
     if (existingIndex !== -1) {
-      const replace = window.confirm(`V sestavě už máte položku v kategorii "${product.category}".\n\nChcete ji nahradit za "${product.modelName}"?`);
-      if (!replace) return; // Uživatel zrušil – nic nepřidáme
-      currentBuild.splice(existingIndex, 1); // Odstraní starou položku
+      setModal({ isOpen: true, type: 'confirm_replace', title: 'Nahradit položku?', message: `V sestavě už máte položku v kategorii "${product.category}".\n\nChcete ji nahradit za "${product.modelName}"?`, pendingOffer: offer, existingIndex });
+      return;
     }
 
+    finalizeAdd(offer, currentBuild);
+  };
+
+  const finalizeAdd = (offer, currentBuild) => {
     currentBuild.push({
       productId: product.id,
       offerShopId: offer.shopId,
@@ -58,7 +65,15 @@ export default function ProductDetail() {
       shopName: getShopName(offer.shopId)
     });
     localStorage.setItem('my_pc_build', JSON.stringify(currentBuild));
-    alert('Přidáno do PC Sestavy!');
+    setModal({ isOpen: true, type: 'alert', title: 'Úspěch', message: 'Přidáno do PC Sestavy!', pendingOffer: null, existingIndex: -1 });
+  };
+
+  const executeReplace = () => {
+    const currentBuild = JSON.parse(localStorage.getItem('my_pc_build')) || [];
+    if (modal.existingIndex !== -1) {
+      currentBuild.splice(modal.existingIndex, 1);
+    }
+    finalizeAdd(modal.pendingOffer, currentBuild);
   };
 
   if (!product) return <div className="text-center" style={{padding: '50px', color: '#999'}}>Načítání...</div>;
@@ -131,6 +146,27 @@ export default function ProductDetail() {
           )}
         </tbody>
       </table>
+
+      {/* Modal Components */}
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'alert'}
+        title={modal.title}
+        onClose={closeModal}
+        type="alert"
+      >
+        <p>{modal.message}</p>
+      </Modal>
+
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'confirm_replace'}
+        title={modal.title}
+        onClose={closeModal}
+        onConfirm={executeReplace}
+        confirmText="Nahradit"
+        type="confirm"
+      >
+        <p style={{whiteSpace: 'pre-line'}}>{modal.message}</p>
+      </Modal>
     </div>
   );
 }

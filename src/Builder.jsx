@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import CategoryIcon from './CategoryIcon';
+import Modal from './Modal';
 
 export default function Builder() {
   const [buildItems, setBuildItems] = useState([]);
   const [warnings, setWarnings] = useState([]);
+  const [modal, setModal] = useState({ isOpen: false, type: '', title: '', message: '' });
+
+  const closeModal = () => setModal({ isOpen: false, type: '', title: '', message: '' });
 
   // Při prvním načtení stránky se podíváme, jestli máme něco uložené v lokální paměti prohlížeče
   useEffect(() => {
@@ -46,11 +50,14 @@ export default function Builder() {
     }
   }, []);
 
-  const clearBuild = () => {
-    if(window.confirm('Opravdu vymazat celou sestavu?')) {
-      localStorage.removeItem('my_pc_build');
-      setBuildItems([]);
-    }
+  const openClearBuild = () => {
+    setModal({ isOpen: true, type: 'delete', title: 'Vymazat sestavu', message: 'Opravdu si přejete vymazat celou sestavu?' });
+  };
+
+  const executeClearBuild = () => {
+    localStorage.removeItem('my_pc_build');
+    setBuildItems([]);
+    closeModal();
   };
 
   // Odstraní konkrétní položku podle jejího indexu v poli
@@ -123,9 +130,21 @@ export default function Builder() {
 
       {buildItems.length > 0 && (
         <div style={{padding: '20px', textAlign: 'center'}}>
-          <button className="btn btn-secondary" onClick={clearBuild}>Vymazat celou sestavu</button>
+          <button className="btn btn-secondary" onClick={openClearBuild}>Vymazat celou sestavu</button>
         </div>
       )}
+
+      {/* Modal Components */}
+      <Modal 
+        isOpen={modal.isOpen && modal.type === 'delete'}
+        title={modal.title}
+        onClose={closeModal}
+        onConfirm={executeClearBuild}
+        confirmText="Vymazat"
+        type="danger"
+      >
+        <p>{modal.message}</p>
+      </Modal>
     </div>
   );
 }
